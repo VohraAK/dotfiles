@@ -2,51 +2,71 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FORCE=false
+
+# Parse args
+for arg in "$@"; do
+    case $arg in
+        --force|-f) FORCE=true ;;
+        --help|-h)
+            echo "Usage: ./install.sh [--force|-f]"
+            echo "  --force, -f    Overwrite existing configs without backup"
+            exit 0
+            ;;
+        *) echo "Unknown option: $arg"; exit 1 ;;
+    esac
+done
 
 echo "Installing dotfiles from $DOTFILES_DIR"
+$FORCE && echo "  FORCE mode: overwriting without backup"
 
 # Create config directory
 mkdir -p "$HOME/.config"
 
-# Link starship config
-if [ -L "$HOME/.config/starship.toml" ]; then
-    echo "~/.config/starship.toml already linked, skipping"
-elif [ -f "$HOME/.config/starship.toml" ]; then
-    echo "Backing up existing ~/.config/starship.toml to ~/.config/starship.toml.bak"
-    mv "$HOME/.config/starship.toml" "$HOME/.config/starship.toml.bak"
-    ln -sf "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
-else
-    ln -sf "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
-fi
-
-# Function to safely link shell config
-link_shell_config() {
-    local source_file="$1"
-    local target_file="$2"
+# Function to link with optional force
+link_file() {
+    local source="$1"
+    local target="$2"
     local name="$3"
 
-    if [ -L "$target_file" ]; then
-        echo "~$name already linked, skipping"
-    elif [ -f "$target_file" ]; then
-        echo "Backing up existing ~$name to ~$name.bak"
-        mv "$target_file" "$target_file.bak"
-        ln -sf "$source_file" "$target_file"
+    if [ -L "$target" ]; then
+        if $FORCE; then
+            rm -f "$target"
+            ln -sf "$source" "$target"
+            echo "  Replaced symlink: ~$name"
+        else
+            echo "  ~$name already linked, skipping"
+        fi
+    elif [ -f "$target" ]; then
+        if $FORCE; then
+            rm -f "$target"
+            ln -sf "$source" "$target"
+            echo "  Overwrote: ~$name"
+        else
+            mv "$target" "$target.bak"
+            ln -sf "$source" "$target"
+            echo "  Backed up & linked: ~$name (~$name.bak)"
+        fi
     else
-        ln -sf "$source_file" "$target_file"
+        ln -sf "$source" "$target"
+        echo "  Linked: ~$name"
     fi
 }
 
-# Link shell configs
-link_shell_config "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" ".zshrc"
-link_shell_config "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc" ".bashrc"
+# Link starship config
+link_file "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "/.config/starship.toml"
 
-# Create local config templates if they don't exist
+# Link shell configs
+link_file "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" "/.zshrc"
+link_file "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc" "/.bashrc"
+
+# Create local config templates if they don't exist (never overwrite)
 if [ ! -f "$HOME/.local.zshrc" ]; then
     cat > "$HOME/.local.zshrc" << 'EOF'
 # Machine-specific config (NOT tracked in git)
 # Add your conda, Android SDK, aliases, PATH exports here
 EOF
-    echo "Created ~/.local.zshrc template"
+    echo "  Created ~/.local.zshrc template"
 fi
 
 if [ ! -f "$HOME/.local.bashrc" ]; then
@@ -54,7 +74,7 @@ if [ ! -f "$HOME/.local.bashrc" ]; then
 # Machine-specific config (NOT tracked in git)
 # Add your conda, Android SDK, aliases, PATH exports here
 EOF
-    echo "Created ~/.local.bashrc template"
+    echo "  Created ~/.local.bashrc template"
 fi
 
 echo ""
