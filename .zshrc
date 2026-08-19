@@ -10,5 +10,8 @@ elif [ -f /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]
     source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
+# initialize autocompletion
+autoload -U compinit && compinit
+
 # Machine-specific config (not tracked in git)
 [ -f ~/.local.zshrc ] && source ~/.local.zshrc
