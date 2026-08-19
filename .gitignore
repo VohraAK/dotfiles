@@ -1,0 +1,6 @@
+# Local machine-specific configs (not synced)
+.local.zshrc
+.local.bashrc
+
+# Backups created by install.sh
+*.bak
