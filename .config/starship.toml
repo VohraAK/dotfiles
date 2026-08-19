@@ -1,0 +1,47 @@
+add_newline = false
+
+# 1. GLOBAL FORMAT
+# Ordered as: [time] hostname:directory git |
+format = """$time$hostname$directory$git_branch$git_status$git_metrics $character"""
+
+[username]
+disabled = true
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style)[:](dimmed white)"
+style = "dimmed white"
+
+[time]
+disabled = false
+time_format = "%H:%M"
+format = "[\\[$time\\]]($style) "
+style = "dimmed white"
+
+[directory]
+format = "[$path]($style)"
+style = "bold yellow"
+truncation_length = 1
+truncate_to_repo = false
+
+[git_branch]
+# No 'on', no logos. Added leading space to separate from directory.
+format = " [$branch]($style)"
+style = "bold #FCF392"
+
+[git_status]
+format = "([$all_status]($style))"
+style = "bold #FCF392"
+conflicted = ""
+modified = ""
+untracked = ""
+staged = ""
+
+[git_metrics]
+format = " [+$added]($added_style)"
+added_style = "bold #7DF9AA"
+disabled = false
+
+[character]
+success_symbol = "[|](bold green)"
+error_symbol = "[|](bold red)"
