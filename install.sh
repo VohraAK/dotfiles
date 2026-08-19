@@ -11,7 +11,8 @@ mkdir -p "$HOME/.config"
 # Link starship config
 ln -sf "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 
-# Link .zshrc
+# Link shell configs
 ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+ln -sf "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc"
 
-echo "Done! Restart your shell or run: source ~/.zshrc"
+echo "Done! Restart your shell or run: source ~/.zshrc (or ~/.bashrc)"
