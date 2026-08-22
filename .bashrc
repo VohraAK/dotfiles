@@ -1,3 +1,6 @@
+# Only run under bash (zsh uses .zshrc)
+[ -z "$BASH_VERSION" ] && return
+
 # Starship prompt
 eval "$(starship init bash)"
 

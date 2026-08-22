@@ -1,8 +1,13 @@
 add_newline = false
 
+# Cap external command time (git) and directory scan time (ms) to keep the
+# prompt fast on slow machines / network filesystems.
+command_timeout = 300
+scan_timeout = 10
+
 # 1. GLOBAL FORMAT
 # Ordered as: [time] hostname:directory git |
-format = """$time$hostname$directory$git_branch$git_status$git_metrics $character"""
+format = """$time$hostname$directory$git_branch$git_status $character"""
 
 [username]
 disabled = true
@@ -38,9 +43,8 @@ untracked = ""
 staged = ""
 
 [git_metrics]
-format = " [+$added]($added_style)"
-added_style = "bold #7DF9AA"
-disabled = false
+# Disabled: runs `git diff` on every prompt (slowest git module)
+disabled = true
 
 [character]
 success_symbol = "[|](bold green)"

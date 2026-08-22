@@ -22,5 +22,16 @@ elif [ -f /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
+# Tab: accept the grey suggestion if present, otherwise native completion
+zle -N autosuggest-accept-or-complete
+autosuggest-accept-or-complete() {
+    if [[ -n "$POSTDISPLAY" ]]; then
+        zle autosuggest-accept
+    else
+        zle expand-or-complete
+    fi
+}
+bindkey '^I' autosuggest-accept-or-complete
+
 # Machine-specific config (not tracked in git)
 [ -f ~/.local.zshrc ] && source ~/.local.zshrc
