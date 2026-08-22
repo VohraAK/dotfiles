@@ -60,6 +60,37 @@ link_file "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml" "/
 link_file "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" "/.zshrc"
 link_file "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc" "/.bashrc"
 
+# Install autosuggestions
+echo ""
+echo "Installing autosuggestions..."
+
+# zsh-autosuggestions (via Homebrew)
+if command -v brew >/dev/null 2>&1; then
+    if brew list zsh-autosuggestions >/dev/null 2>&1; then
+        echo "  zsh-autosuggestions already installed"
+    else
+        echo "  Installing zsh-autosuggestions..."
+        brew install zsh-autosuggestions
+    fi
+else
+    echo "  brew not found; install zsh-autosuggestions manually"
+fi
+
+# ble.sh (bash autosuggestions; requires git, make, gawk)
+if [ -f "$HOME/.local/share/blesh/ble.sh" ]; then
+    echo "  ble.sh already installed"
+elif command -v git >/dev/null 2>&1 && command -v make >/dev/null 2>&1 && command -v gawk >/dev/null 2>&1; then
+    echo "  Installing ble.sh..."
+    BLE_TMP="$(mktemp -d)"
+    git clone --recursive --depth 1 --shallow-submodules \
+        https://github.com/akinomyoga/ble.sh.git "$BLE_TMP/ble.sh"
+    make -C "$BLE_TMP/ble.sh" install PREFIX="$HOME/.local"
+    rm -rf "$BLE_TMP"
+else
+    echo "  Skipping ble.sh (requires git, make, gawk)."
+    echo "    On macOS: brew install gawk"
+fi
+
 # Create local config templates if they don't exist (never overwrite)
 if [ ! -f "$HOME/.local.zshrc" ]; then
     cat > "$HOME/.local.zshrc" << 'EOF'
