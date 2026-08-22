@@ -1,28 +1,15 @@
-# Starship prompt
-eval "$(starship init zsh)"
-
-# Syntax highlighting (portable paths)
-if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-elif [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-elif [ -f /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Source autosuggestions from apt path
+if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-# initialize autocompletion
+# Initialize completion system
 autoload -U compinit && compinit
 
-# Autosuggestions (portable paths)
-if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -f /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+# Initialize Starship prompt
+eval "$(starship init zsh)"
 
-# Tab: accept the grey suggestion if present, otherwise native completion
+# Tab: accept suggestion if present, otherwise native completion
 zle -N autosuggest-accept-or-complete
 autosuggest-accept-or-complete() {
     if [[ -n "$POSTDISPLAY" ]]; then
@@ -33,5 +20,7 @@ autosuggest-accept-or-complete() {
 }
 bindkey '^I' autosuggest-accept-or-complete
 
-# Machine-specific config (not tracked in git)
-[ -f ~/.local.zshrc ] && source ~/.local.zshrc
+# Source syntax highlighting from apt path (must be last)
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi

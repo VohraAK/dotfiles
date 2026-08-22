@@ -1,26 +1,20 @@
 add_newline = false
 
-# Cap external command time (git) and directory scan time (ms) to keep the
-# prompt fast on slow machines / network filesystems.
-command_timeout = 300
+# Prevent visual hanging on deep directories / slow commands
+command_timeout = 1000
 scan_timeout = 10
 
-# 1. GLOBAL FORMAT
-# Ordered as: [time] hostname:directory git |
 format = """$time$hostname$directory$git_branch$git_status $character"""
-
-[username]
-disabled = true
-
-[hostname]
-ssh_only = false
-format = "[$hostname]($style)[:](dimmed white)"
-style = "dimmed white"
 
 [time]
 disabled = false
 time_format = "%H:%M"
 format = "[\\[$time\\]]($style) "
+style = "dimmed white"
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style)[:](dimmed white)"
 style = "dimmed white"
 
 [directory]
@@ -30,22 +24,34 @@ truncation_length = 1
 truncate_to_repo = false
 
 [git_branch]
-# No 'on', no logos. Added leading space to separate from directory.
 format = " [$branch]($style)"
 style = "bold #FCF392"
 
 [git_status]
 format = "([$all_status]($style))"
 style = "bold #FCF392"
+ignore_submodules = true
 conflicted = ""
 modified = ""
 untracked = ""
 staged = ""
 
-[git_metrics]
-# Disabled: runs `git diff` on every prompt (slowest git module)
-disabled = true
-
 [character]
 success_symbol = "[|](bold green)"
 error_symbol = "[|](bold red)"
+
+# Disable expensive global version checks
+[python]
+detect_extensions = []
+
+[nodejs]
+detect_extensions = []
+
+[rust]
+detect_extensions = []
+
+[golang]
+detect_extensions = []
+
+[php]
+detect_extensions = []
