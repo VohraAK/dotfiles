@@ -3,9 +3,24 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Detect OS
+OS="$(uname -s)"
+if [ "$OS" = "Darwin" ]; then
+    PKG_MGR="brew"
+elif [ "$OS" = "Linux" ]; then
+    PKG_MGR="apt"
+else
+    echo "Unsupported OS: $OS"
+    exit 1
+fi
+
 # Install dependencies
 echo "Installing dependencies..."
-sudo apt update && sudo apt install -y zsh-autosuggestions zsh-syntax-highlighting curl
+if [ "$PKG_MGR" = "apt" ]; then
+    sudo apt update && sudo apt install -y zsh-autosuggestions zsh-syntax-highlighting curl
+elif [ "$PKG_MGR" = "brew" ]; then
+    brew install zsh-autosuggestions zsh-syntax-highlighting curl
+fi
 
 # Install Starship non-interactively
 echo "Installing Starship..."
