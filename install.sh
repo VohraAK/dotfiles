@@ -18,6 +18,9 @@ fi
 echo "Installing dependencies..."
 if [ "$PKG_MGR" = "apt" ]; then
     sudo apt update && sudo apt install -y zsh-autosuggestions zsh-syntax-highlighting curl
+    # Byte-compile syntax highlighting for faster loading on slow SD cards
+    echo "Compiling zsh-syntax-highlighting..."
+    zsh -c 'zcompile /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' 2>/dev/null || true
 elif [ "$PKG_MGR" = "brew" ]; then
     brew install zsh-autosuggestions zsh-syntax-highlighting curl
 fi
