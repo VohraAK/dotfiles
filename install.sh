@@ -29,6 +29,13 @@ fi
 echo "Installing Starship..."
 curl -sS https://starship.rs/install.sh | sh -s -- -y
 
+# Make zsh the login shell (otherwise SSH sessions stay on bash)
+ZSH_PATH="$(command -v zsh)"
+if [ "$(basename "${SHELL:-}")" != "zsh" ] && [ -n "$ZSH_PATH" ]; then
+    echo "Setting login shell to zsh..."
+    sudo chsh -s "$ZSH_PATH" "$USER" || echo "chsh failed; run: chsh -s $ZSH_PATH"
+fi
+
 # Create config directory
 mkdir -p "$HOME/.config"
 

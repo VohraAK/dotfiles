@@ -48,3 +48,6 @@ elif [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
 elif [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
+
+# Machine-specific config (not synced)
+[ -f "$HOME/.local.zshrc" ] && source "$HOME/.local.zshrc"
